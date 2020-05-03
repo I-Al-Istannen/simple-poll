@@ -25,12 +25,17 @@
             <v-card>
               <v-card-title class="entry-header">{{ entry.humanName }}</v-card-title>
               <v-card-text>
-                <div v-if="entry.type === 'BOOLEAN'" class="text-center headline font-weight-black">
+                <div
+                  v-if="entry.type === 'BOOLEAN'"
+                  class="nicer-word-break text-center headline font-weight-black"
+                >
                   <span>{{ voteCountForEntry(entry.id) }}</span>
                 </div>
                 <div v-if="entry.type === 'TEXT'">
                   <v-list>
-                    <v-subheader>{{ voteCountForEntry(entry.id) }} Vote(s)</v-subheader>
+                    <v-subheader class="nicer-word-break">
+                      <span>{{ voteCountForEntry(entry.id) }} Vote(s)</span>
+                    </v-subheader>
                     <v-list-item-group>
                       <v-list-item v-for="(vote, index) in votesForEntry(entry.id)" :key="index">
                         <span>{{ vote.value }}</span>
@@ -139,5 +144,9 @@ export default class Results extends Vue {
 .entry-header {
   display: flex;
   justify-content: center;
+}
+
+.nicer-word-break {
+  word-break: break-word;
 }
 </style>

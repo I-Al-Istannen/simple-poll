@@ -66,15 +66,15 @@ import { PollEntry, Poll, UserVote } from '../store/types'
 
 @Component
 export default class Results extends Vue {
-  get pollId() {
+  private get pollId() {
     return this.$route.params.pollId
   }
 
-  get poll(): Poll | undefined {
+  private get poll(): Poll | undefined {
     return vxm.pollModule.pollById(this.pollId)
   }
 
-  get pollEntries(): PollEntry[] {
+  private get pollEntries(): PollEntry[] {
     if (!this.poll) {
       return []
     }
@@ -83,29 +83,29 @@ export default class Results extends Vue {
     return entries
   }
 
-  get canReveal() {
+  private get canReveal() {
     if (!this.poll) {
       return false
     }
     return this.poll.creator
   }
 
-  get isRevealed() {
+  private get isRevealed() {
     if (!this.poll) {
       return false
     }
     return this.poll.resultsRevealed
   }
 
-  get origin() {
+  private get origin() {
     return document.location.origin
   }
 
-  voteCountForEntry(id: string): number {
+  private voteCountForEntry(id: string): number {
     return this.votesForEntry(id).length
   }
 
-  votesForEntry(id: string): UserVote[] {
+  private votesForEntry(id: string): UserVote[] {
     if (!this.poll) {
       return []
     }

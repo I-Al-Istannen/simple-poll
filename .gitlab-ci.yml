@@ -16,7 +16,7 @@ compile-backend:
   cache:
     key: "maven_cache"
     paths:
-      - backend/.repository/
+      - .repository/
   # Tell maven to use the cache
   variables:
     MAVEN_OPTS: "-Dmaven.repo.local=./.repository"

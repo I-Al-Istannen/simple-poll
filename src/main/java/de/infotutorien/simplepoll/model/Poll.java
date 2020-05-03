@@ -59,6 +59,10 @@ public class Poll {
   }
 
   public void addVote(UserVote<?> vote) {
+    // Finished
+    if (isRevealResults()) {
+      return;
+    }
     Optional<PollEntry> entry = entries.stream()
         .filter(it -> it.getId().equals(vote.getPollEntry()))
         .findFirst();

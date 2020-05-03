@@ -1,4 +1,4 @@
-FROM openjdk:14-jdk-slim
+FROM adoptopenjdk:14-jdk-hotspot
 LABEL simplepoll="true"
 
 # We use nginx as a reverse proxy

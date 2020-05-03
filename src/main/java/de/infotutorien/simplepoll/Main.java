@@ -5,6 +5,7 @@ import de.infotutorien.simplepoll.config.PollConfig;
 import de.infotutorien.simplepoll.config.PollUser;
 import de.infotutorien.simplepoll.endpoint.PollCreateModifyEndpoint;
 import de.infotutorien.simplepoll.endpoint.PollFetchEndpoint;
+import de.infotutorien.simplepoll.endpoint.PollGroupEndpoint;
 import de.infotutorien.simplepoll.endpoint.PollVoteEndpoint;
 import de.infotutorien.simplepoll.model.Polls;
 import io.dropwizard.Application;
@@ -36,6 +37,7 @@ public class Main extends Application<PollConfig> {
     environment.jersey().register(new PollFetchEndpoint(polls));
     environment.jersey().register(new PollCreateModifyEndpoint(polls));
     environment.jersey().register(new PollVoteEndpoint(polls));
+    environment.jersey().register(new PollGroupEndpoint(polls));
   }
 
   private void configureCors(Environment environment) {

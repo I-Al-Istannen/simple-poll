@@ -40,7 +40,8 @@ public class PollCreateModifyEndpoint {
         user.getId(),
         pollCreateRequest.getPollEntries().stream()
             .map(CreatePollEntry::toPollEntry)
-            .collect(toList())
+            .collect(toList()),
+        pollCreateRequest.allowMultiple
     );
     polls.addPoll(poll);
 
@@ -67,13 +68,16 @@ public class PollCreateModifyEndpoint {
 
   private static class PollCreateRequest {
 
+    private final boolean allowMultiple;
     @NotNull
     private final String name;
     @Valid
     @NotNull
     private final List<CreatePollEntry> pollEntries;
 
-    public PollCreateRequest(String name, List<CreatePollEntry> pollEntries) {
+    public PollCreateRequest(boolean allowMultiple, String name,
+        List<CreatePollEntry> pollEntries) {
+      this.allowMultiple = allowMultiple;
       this.name = name;
       this.pollEntries = pollEntries;
     }
@@ -84,6 +88,10 @@ public class PollCreateModifyEndpoint {
 
     public List<CreatePollEntry> getPollEntries() {
       return pollEntries;
+    }
+
+    public boolean isAllowMultiple() {
+      return allowMultiple;
     }
   }
 

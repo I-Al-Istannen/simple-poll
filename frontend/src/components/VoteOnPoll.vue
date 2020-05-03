@@ -19,7 +19,7 @@
               ></v-text-field>
             </v-col>
           </v-row>
-          <v-row v-if="hasBooleanOption">
+          <v-row v-if="hasBooleanOption && !allowMultiple">
             <v-radio-group :rules="[notEmptyArray]" v-model="booleanOptionsValues">
               <v-radio
                 v-for="entry in booleanOptions"
@@ -29,11 +29,21 @@
               ></v-radio>
             </v-radio-group>
           </v-row>
+          <v-row v-if="hasBooleanOption && allowMultiple">
+            <v-col cols="3" v-for="entry in booleanOptions" :key="entry.id">
+              <v-checkbox
+                :label="entry.humanName"
+                :value="entry.id"
+                :rules="[notEmptyArray]"
+                v-model="booleanOptionsValues"
+                multiple
+              ></v-checkbox>
+            </v-col>
+          </v-row>
         </v-form>
-        <div
-          v-if="!poll"
-          class="headline text-center"
-        >There is no poll with that ID or it hasn't loaded yet.</div>
+        <div v-if="!poll" class="headline text-center">
+          <span>There is no poll with that ID or it hasn't loaded yet.</span>
+        </div>
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
@@ -89,6 +99,13 @@ export default class VoteOnPoll extends Vue {
       return []
     }
     return this.poll.entries.filter(it => it.type === EntryType.BOOLEAN)
+  }
+
+  private get allowMultiple() {
+    if (!this.poll) {
+      return false
+    }
+    return this.poll.allowMultiple
   }
 
   private refresh() {

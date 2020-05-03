@@ -1,8 +1,9 @@
 import Vue from 'vue'
 import VueRouter, { RouteConfig, RouterOptions } from 'vue-router'
 import Home from '../views/Home.vue'
+import Create from '../views/Create.vue'
 import NotFound404 from '../views/NotFound404.vue'
-import { mdiHome } from '@mdi/js'
+import { mdiHome, mdiPoll } from '@mdi/js'
 
 Vue.use(VueRouter)
 
@@ -24,6 +25,16 @@ const routes = [
       label: 'Home',
       navigable: true,
       icon: mdiHome
+    }
+  },
+  {
+    path: '/create',
+    name: 'create-poll',
+    component: Create,
+    meta: {
+      label: 'Create a poll',
+      navigable: true,
+      icon: mdiPoll
     }
   },
   {

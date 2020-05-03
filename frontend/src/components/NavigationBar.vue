@@ -71,7 +71,7 @@ class NavigationItem {
 @Component
 export default class NavigationBar extends Vue {
   private iconFontSize = 22
-  private title = 'VelCom'
+  private title = 'SimplePoll'
 
   private drawerShown = false
 

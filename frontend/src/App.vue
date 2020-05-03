@@ -2,7 +2,7 @@
   <v-app>
     <v-content>
       <nav-bar></nav-bar>
-      <router-view />
+      <router-view class="mt-5" />
     </v-content>
   </v-app>
 </template>

@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import de.infotutorien.simplepoll.model.Poll;
 import de.infotutorien.simplepoll.model.PollEntry;
 import de.infotutorien.simplepoll.model.UserVote;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -21,12 +23,12 @@ public class JsonPoll {
   private final boolean isRevealed;
   private final boolean isAllowMultiple;
 
-  public JsonPoll(String humanName, UUID id, UUID creator, List<PollEntry> entries,
+  public JsonPoll(String humanName, UUID id, UUID creator, Collection<PollEntry> entries,
       Set<UserVote<?>> votes, boolean isRevealed, boolean isAllowMultiple) {
     this.humanName = humanName;
     this.id = id;
     this.creator = creator;
-    this.entries = entries;
+    this.entries = new ArrayList<>(entries);
     this.votes = votes;
     this.isRevealed = isRevealed;
     this.isAllowMultiple = isAllowMultiple;

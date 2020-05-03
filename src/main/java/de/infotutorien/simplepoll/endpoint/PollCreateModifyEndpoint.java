@@ -41,7 +41,7 @@ public class PollCreateModifyEndpoint {
         pollCreateRequest.getPollEntries().stream()
             .map(CreatePollEntry::toPollEntry)
             .collect(toList()),
-        pollCreateRequest.allowMultiple
+        pollCreateRequest.isAllowMultiple()
     );
     polls.addPoll(poll);
 

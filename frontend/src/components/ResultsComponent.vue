@@ -11,7 +11,13 @@
         <v-row justify="end">
           <v-col cols="auto">
             <span>Link to this poll:</span>
-            <a class="px-1 subtitle-2" :href="pollVoteLink">{{ pollVoteLink }}</a>
+            <router-link
+              class="pl-1"
+              :to="{ name: 'vote', params: { pollId: pollId } }"
+              v-slot="{ href }"
+            >
+              <a :href="href">{{ origin }}{{ href }}</a>
+            </router-link>
           </v-col>
         </v-row>
         <v-row>
@@ -91,8 +97,8 @@ export default class Results extends Vue {
     return this.poll.resultsRevealed
   }
 
-  get pollVoteLink() {
-    return document.location.origin + '/vote/' + this.pollId
+  get origin() {
+    return document.location.origin
   }
 
   voteCountForEntry(id: string): number {

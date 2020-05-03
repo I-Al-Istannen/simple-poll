@@ -41,6 +41,15 @@
         </executions>
         <configuration>
           <finalName>${project.name}</finalName>
+          <transformers>
+            <transformer
+              implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+              <manifestEntries>
+                <Main-Class>de.infotutorien.simplepoll.Main</Main-Class>
+              </manifestEntries>
+            </transformer>
+            <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+          </transformers>
         </configuration>
       </plugin>
     </plugins>
@@ -67,12 +76,6 @@
     <dependency>
       <groupId>io.dropwizard</groupId>
       <artifactId>dropwizard-auth</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>com.fasterxml.jackson.module</groupId>
-      <artifactId>jackson-modules-java8</artifactId>
-      <version>2.10.3</version>
     </dependency>
 
     <!--NEEDED FOR DROPWIZARD (NO LONGER INCLUDED IN THE JDK)-->

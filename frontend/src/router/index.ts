@@ -3,6 +3,7 @@ import VueRouter, { RouteConfig, RouterOptions } from 'vue-router'
 import Home from '../views/Home.vue'
 import Create from '../views/Create.vue'
 import Results from '../views/ViewResult.vue'
+import Vote from '../views/Vote.vue'
 import NotFound404 from '../views/NotFound404.vue'
 import { mdiHome, mdiPoll, mdiStackOverflow } from '@mdi/js'
 
@@ -44,6 +45,16 @@ const routes = [
     component: Results,
     meta: {
       label: 'View poll results',
+      navigable: false,
+      icon: mdiStackOverflow
+    }
+  },
+  {
+    path: '/vote/:pollId',
+    name: 'vote',
+    component: Vote,
+    meta: {
+      label: 'Vote on a poll',
       navigable: false,
       icon: mdiStackOverflow
     }

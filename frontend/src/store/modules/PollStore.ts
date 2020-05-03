@@ -67,6 +67,27 @@ export class PollStore extends VxModule {
     return poll
   }
 
+  @action
+  async vote(payload: {
+    id: string
+    votes: { entryId: string; value: string }[]
+  }): Promise<Poll | undefined> {
+    const response = await axios.post('vote', {
+      pollId: payload.id,
+      votes: payload.votes
+    })
+
+    if (response.status === 404) {
+      return undefined
+    }
+
+    const poll = pollFromJson(response.data)
+
+    this.addPoll(poll)
+
+    return poll
+  }
+
   @mutation
   addPoll(poll: Poll) {
     Vue.set(this.polls, poll.id, poll)

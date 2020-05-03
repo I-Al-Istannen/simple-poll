@@ -4,8 +4,6 @@ import static de.infotutorien.simplepoll.util.ResponseHelper.notFound;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import de.infotutorien.simplepoll.config.PollUser;
 import de.infotutorien.simplepoll.model.Poll;
 import de.infotutorien.simplepoll.model.PollGroup;
@@ -15,6 +13,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.GET;
@@ -37,7 +36,7 @@ public class PollGroupEndpoint {
   }
 
   @PUT
-  public PollGroup createGroup(@Auth PollUser user, @Valid PollGroupCreationRequest request) {
+  public JsonPollGroup createGroup(@Auth PollUser user, @Valid PollGroupCreationRequest request) {
     PollGroup group = new PollGroup(
         UUID.randomUUID(),
         user.getId(),
@@ -45,11 +44,11 @@ public class PollGroupEndpoint {
     );
     polls.addGroup(group);
 
-    return group;
+    return JsonPollGroup.fromPrivilegedPollGroup(group);
   }
 
   @PATCH
-  public PollGroup addPoll(@Auth PollUser user, @Valid PollAddRequest request) {
+  public JsonPollGroup addPoll(@Auth PollUser user, @Valid PollAddRequest request) {
     Optional<PollGroup> groupOptional = polls.getGroup(request.getGroupId());
 
     if (groupOptional.isEmpty()) {
@@ -64,30 +63,40 @@ public class PollGroupEndpoint {
       throw new WebApplicationException(notFound());
     }
 
+    if (!user.getId().equals(group.getCreator())) {
+      throw new WebApplicationException(notFound());
+    }
+
     group.addPoll(pollOptional.get());
 
-    return group;
+    return JsonPollGroup.fromPrivilegedPollGroup(group);
   }
 
   @GET
-  public PollGroup getPollGroup(@Auth PollUser user, @NotNull @QueryParam("id") UUID groupId) {
+  public JsonPollGroup getPollGroup(@Auth PollUser user, @NotNull @QueryParam("id") UUID groupId) {
     Optional<PollGroup> groupOptional = polls.getGroup(groupId);
 
     if (groupOptional.isEmpty()) {
       throw new WebApplicationException(notFound());
     }
-    return groupOptional.get();
+    if (user.getId().equals(groupOptional.get().getCreator())) {
+      return JsonPollGroup.fromPrivilegedPollGroup(groupOptional.get());
+    }
+    return JsonPollGroup.fromUnprivilegedPollGroup(groupOptional.get());
   }
 
   @Path("/for-user")
   @GET
-  public List<PollGroup> getGroupsForUser(@Auth PollUser user) {
-    return polls.getGroupsOfUser(user.getId());
+  public List<JsonPollGroup> getGroupsForUser(@Auth PollUser user) {
+    return polls.getGroupsOfUser(user.getId())
+        .stream()
+        .map(JsonPollGroup::fromPrivilegedPollGroup)
+        .collect(Collectors.toList());
   }
 
   @Path("/polls")
   @GET
-  public Collection<Poll> getPollsInGroup(@Auth PollUser user,
+  public Collection<JsonPoll> getPollsInGroup(@Auth PollUser user,
       @NotNull @QueryParam("id") UUID groupId) {
     Optional<PollGroup> groupOptional = polls.getGroup(groupId);
 
@@ -95,7 +104,18 @@ public class PollGroupEndpoint {
       throw new WebApplicationException(notFound());
     }
 
-    return groupOptional.get().getAllPolls();
+    if (user.getId().equals(groupOptional.get().getCreator())) {
+      return groupOptional.get()
+          .getAllPolls()
+          .stream()
+          .map(JsonPoll::fromPrivilegedPoll)
+          .collect(Collectors.toList());
+    }
+    return groupOptional.get()
+        .getAllPolls()
+        .stream()
+        .map(JsonPoll::fromUnprivilegedPoll)
+        .collect(Collectors.toList());
   }
 
   private static class PollGroupCreationRequest {

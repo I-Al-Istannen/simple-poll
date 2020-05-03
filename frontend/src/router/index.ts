@@ -1,30 +1,73 @@
-import Vue from "vue";
-import VueRouter, { RouteConfig } from "vue-router";
-import Home from "../views/Home.vue";
+import Vue from 'vue'
+import VueRouter, { RouteConfig, RouterOptions } from 'vue-router'
+import Home from '../views/Home.vue'
+import NotFound404 from '../views/NotFound404.vue'
+import { mdiHome } from '@mdi/js'
 
-Vue.use(VueRouter);
+Vue.use(VueRouter)
 
-const routes: Array<RouteConfig> = [
+const routes = [
   {
-    path: "/",
-    name: "Home",
-    component: Home
+    path: '/',
+    redirect: '/home',
+    meta: {
+      navigable: false,
+      label: 'Home'
+    }
   },
   {
-    path: "/about",
-    name: "About",
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () =>
-      import(/* webpackChunkName: "about" */ "../views/About.vue")
+    // Redirect / to /home
+    path: '/home',
+    name: 'home',
+    component: Home,
+    meta: {
+      label: 'Home',
+      navigable: true,
+      icon: mdiHome
+    }
+  },
+  {
+    path: '*',
+    name: '404',
+    component: NotFound404,
+    meta: {
+      label: 'Not found',
+      navigable: false
+    }
   }
-];
+]
 
-const router = new VueRouter({
-  mode: "history",
+class VueRouterEx extends VueRouter {
+  matcher: any
+
+  public routes: RouteConfig[] = []
+
+  constructor(options: RouterOptions) {
+    super(options)
+    const { addRoutes } = this.matcher
+    const { routes } = options
+
+    this.routes = routes!
+
+    this.matcher.addRoutes = (newRoutes: RouteConfig[]) => {
+      this.routes.push(...newRoutes)
+      addRoutes(newRoutes)
+    }
+  }
+}
+
+Vue.use(VueRouterEx)
+
+const router = new VueRouterEx({
+  mode: 'history',
   base: process.env.BASE_URL,
   routes
-});
+})
 
-export default router;
+router.afterEach((to, from) => {
+  Vue.nextTick(() => {
+    document.title = to.meta.label ? 'SimplePoll - ' + to.meta.label : 'SimplePoll'
+  })
+})
+
+export default router

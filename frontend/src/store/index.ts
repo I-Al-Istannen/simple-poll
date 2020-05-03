@@ -1,11 +1,24 @@
-import Vue from "vue";
-import Vuex from "vuex";
+import Vue from 'vue'
+import Vuex from 'vuex'
+import { extractVuexModule, createProxy } from 'vuex-class-component'
+import { UserStore } from './modules/UserStore'
 
-Vue.use(Vuex);
+interface RootState {
+  baseUrl: string
+  userModule: UserStore
+}
 
-export default new Vuex.Store({
-  state: {},
-  mutations: {},
-  actions: {},
-  modules: {}
-});
+Vue.use(Vuex)
+
+export const store = new Vuex.Store({
+  state: {
+    baseUrl: process.env.VUE_APP_BASE_URL
+  } as RootState,
+  modules: {
+    ...extractVuexModule(UserStore)
+  }
+})
+
+export const vxm = {
+  userModule: createProxy(store, UserStore)
+}

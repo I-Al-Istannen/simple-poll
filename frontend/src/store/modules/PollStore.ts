@@ -1,5 +1,5 @@
 import { createModule, action, mutation } from 'vuex-class-component'
-import { Poll, PollEntry, EntryType, UserVote } from '../types'
+import { Poll, PollEntry, EntryType, UserVote, PollGroup } from '../types'
 import axios from 'axios'
 import Vue from 'vue'
 
@@ -20,8 +20,13 @@ function pollFromJson(data: any) {
   )
 }
 
+function pollGroupFromJson(data: any) {
+  return new PollGroup(data.name, data.id, data.creator, data.polls)
+}
+
 export class PollStore extends VxModule {
   polls: { [key: string]: Poll } = {}
+  myPollGroups: { [key: string]: PollGroup } = {}
 
   @action
   async createPoll(payload: {
@@ -89,6 +94,61 @@ export class PollStore extends VxModule {
     this.addPoll(poll)
 
     return poll
+  }
+
+  @action
+  async createPollGroup(name: string): Promise<PollGroup> {
+    const response = await axios.put('group', {
+      name: name
+    })
+
+    const group = pollGroupFromJson(response.data)
+
+    this.addPollGroup(group)
+
+    return group
+  }
+
+  @action
+  async fetchPollsInGroup(id: string): Promise<Poll[]> {
+    const response = await axios.get('group/polls', { params: { id: id } })
+
+    const polls: Poll[] = response.data.map((it: any) => pollFromJson(it))
+
+    polls.forEach(it => this.addPoll(it))
+
+    return polls
+  }
+
+  @action
+  async fetchMyPollGroups(): Promise<PollGroup[]> {
+    const response = await axios.get('group/for-user')
+
+    const groups: PollGroup[] = response.data.map((it: any) => pollGroupFromJson(it))
+
+    groups.forEach(it => this.addPollGroup(it))
+
+    return groups
+  }
+
+  @action
+  async fetchPollGroup(id: string): Promise<PollGroup | undefined> {
+    const response = await axios.get('group', { params: { id: id } })
+
+    if (response.status === 404) {
+      return undefined
+    }
+
+    const group = pollGroupFromJson(response.data)
+
+    this.addPollGroup(group)
+
+    return group
+  }
+
+  @mutation
+  addPollGroup(pollGroup: PollGroup) {
+    Vue.set(this.myPollGroups, pollGroup.id, pollGroup)
   }
 
   @mutation

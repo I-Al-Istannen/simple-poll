@@ -54,3 +54,17 @@ export class Poll {
     this.allowMultiple = allowMultiple
   }
 }
+
+export class PollGroup {
+  name: string
+  id: string
+  creator: string | undefined
+  polls: Poll[]
+
+  constructor(name: string, id: string, creator: string | undefined, polls: Poll[]) {
+    this.name = name
+    this.id = id
+    this.creator = creator
+    this.polls = polls
+  }
+}

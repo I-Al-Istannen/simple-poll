@@ -82,7 +82,10 @@ public class Poll {
     }
 
     if (!isAllowMultiple()) {
-      votes.removeIf(it -> entries.get(it.getPollEntry()).getType() == EntryType.BOOLEAN);
+      votes.removeIf(
+          it -> it.getUser().equals(vote.getUser())
+              && entries.get(it.getPollEntry()).getType() == EntryType.BOOLEAN
+      );
     }
 
     votes.add(vote);

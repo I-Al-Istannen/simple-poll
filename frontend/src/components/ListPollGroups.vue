@@ -84,7 +84,7 @@ export default class ListPollGroups extends Vue {
   }
 
   private pollToItem(poll: Poll): TreeItem {
-    return new TreeItem(poll.id, poll.humanName, [])
+    return new TreeItem(poll.id, poll.humanName, undefined)
   }
 
   private edit(item: TreeItem) {

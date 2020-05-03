@@ -6,7 +6,7 @@ import Results from '../views/ViewResult.vue'
 import Vote from '../views/Vote.vue'
 import PollGroups from '../views/PollGroups.vue'
 import NotFound404 from '../views/NotFound404.vue'
-import { mdiHome, mdiPoll, mdiStackOverflow } from '@mdi/js'
+import { mdiHome, mdiPoll, mdiStackOverflow, mdiShape } from '@mdi/js'
 
 Vue.use(VueRouter)
 
@@ -66,8 +66,8 @@ const routes = [
     component: PollGroups,
     meta: {
       label: 'List your poll groups',
-      navigable: false,
-      icon: mdiStackOverflow
+      navigable: true,
+      icon: mdiShape
     }
   },
   {

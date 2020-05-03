@@ -115,6 +115,20 @@ export class PollStore extends VxModule {
   }
 
   @action
+  async addPollToGroup(payload: { groupId: string; pollId: string }): Promise<PollGroup> {
+    const response = await axios.patch('group', {
+      groupId: payload.groupId,
+      pollId: payload.pollId
+    })
+
+    const group = pollGroupFromJson(response.data)
+
+    this.addPollGroup(group)
+
+    return group
+  }
+
+  @action
   async fetchPollsInGroup(id: string): Promise<Poll[]> {
     const response = await axios.get('group/polls', { params: { id: id } })
 

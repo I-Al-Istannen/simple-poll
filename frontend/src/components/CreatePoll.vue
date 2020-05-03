@@ -39,6 +39,23 @@
             :disabled="freeformInput"
             hide-details
           ></v-checkbox>
+          <v-row>
+            <v-col cols="3">
+              <v-select
+                v-model="selectedGroups"
+                multiple
+                clearable
+                chips
+                deletable-chips
+                class="mt-3"
+                :items="myPollGroups"
+                item-text="name"
+                item-value="id"
+                label="Add to poll group"
+                return-object
+              ></v-select>
+            </v-col>
+          </v-row>
         </v-form>
       </v-card-text>
       <v-card-actions>
@@ -53,7 +70,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import Component from 'vue-class-component'
-import { EntryType } from '@/store/types'
+import { EntryType, PollGroup } from '@/store/types'
 import { vxm } from '../store'
 
 @Component
@@ -76,6 +93,8 @@ export default class Create extends Vue {
       value: ['Custom']
     }
   ]
+
+  private selectedGroups: PollGroup[] = []
 
   private formValid = false
   private allowMultiple = false
@@ -116,6 +135,10 @@ export default class Create extends Vue {
     return this.customOptions.length > 0 ? true : 'Please add at least one field'
   }
 
+  private get myPollGroups() {
+    return vxm.pollModule.allMyPollGroups
+  }
+
   private async create() {
     if (!(this.$refs.form as any).validate()) {
       return
@@ -134,7 +157,17 @@ export default class Create extends Vue {
       allowMultiple: this.allowMultiple,
       entries: entries
     })
+
+    for (let i = 0; i < this.selectedGroups.length; i++) {
+      const id = this.selectedGroups[i].id
+      await vxm.pollModule.addPollToGroup({ groupId: id, pollId: poll.id })
+    }
+
     this.$router.push({ name: 'view-results', params: { pollId: poll.id } })
+  }
+
+  mounted() {
+    vxm.pollModule.fetchMyPollGroups()
   }
 }
 </script>

@@ -120,7 +120,7 @@ export default class Create extends Vue {
     }
 
     const poll = await vxm.pollModule.createPoll({ name: this.pollName, entries: entries })
-    console.log(poll)
+    this.$router.push({ name: 'view-results', params: { pollId: poll.id } })
   }
 }
 </script>

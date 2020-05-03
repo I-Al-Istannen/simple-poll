@@ -4,6 +4,7 @@ import router from './router'
 import vuetify from './plugins/vuetify'
 import { store, vxm } from './store'
 import axios from 'axios'
+import { login } from './store/modules/UserStore'
 
 Vue.config.productionTip = false
 
@@ -16,19 +17,9 @@ const vue = new Vue({
   render: h => h(App)
 })
 
-// from: https://stackoverflow.com/a/2117523
-function uuidv4(): string {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-    const r = (Math.random() * 16) | 0,
-      v = c == 'x' ? r : (r & 0x3) | 0x8
-    return v.toString(16)
-  })
-}
-
-vxm.userModule.name = 'Max Musterfrau'
-vxm.userModule.password = uuidv4()
-
 axios.interceptors.request.use(function(config) {
+  login()
+
   config.auth = {
     username: vxm.userModule.name!,
     password: vxm.userModule.password!

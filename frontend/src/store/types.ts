@@ -30,13 +30,24 @@ export class UserVote {
 export class Poll {
   humanName: string
   id: string
+  creator: string | undefined
   entries: PollEntry[]
   votes: Set<UserVote>
+  resultsRevealed: boolean
 
-  constructor(humanName: string, id: string, entries: PollEntry[], votes: UserVote[]) {
+  constructor(
+    humanName: string,
+    id: string,
+    creator: string | undefined,
+    entries: PollEntry[],
+    votes: UserVote[],
+    resultsRevealed: boolean
+  ) {
     this.humanName = humanName
     this.id = id
+    this.creator = creator
     this.entries = entries.slice()
     this.votes = new Set(votes)
+    this.resultsRevealed = resultsRevealed
   }
 }

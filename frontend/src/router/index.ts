@@ -2,8 +2,9 @@ import Vue from 'vue'
 import VueRouter, { RouteConfig, RouterOptions } from 'vue-router'
 import Home from '../views/Home.vue'
 import Create from '../views/Create.vue'
+import Results from '../views/ViewResult.vue'
 import NotFound404 from '../views/NotFound404.vue'
-import { mdiHome, mdiPoll } from '@mdi/js'
+import { mdiHome, mdiPoll, mdiStackOverflow } from '@mdi/js'
 
 Vue.use(VueRouter)
 
@@ -35,6 +36,16 @@ const routes = [
       label: 'Create a poll',
       navigable: true,
       icon: mdiPoll
+    }
+  },
+  {
+    path: '/results/:pollId',
+    name: 'view-results',
+    component: Results,
+    meta: {
+      label: 'View poll results',
+      navigable: false,
+      icon: mdiStackOverflow
     }
   },
   {

@@ -1,15 +1,28 @@
 FROM openjdk:14-jdk-slim
 LABEL simplepoll="true"
 
-RUN useradd -m simplepoll
+# We use nginx as a reverse proxy
+# We use git for fast cloning
+# We use sudo to drop privileges
+RUN apt update && apt install nginx -y && apt install sudo -y && apt install git -y
+
+# Preconfigured nginx configs for development on info-tuorien.de
+COPY nginx-site /etc/nginx/sites-available
+COPY nginx.conf /etc/nginx/nginx.conf
+
+RUN ln -s /etc/nginx/sites-available/nginx-site /etc/nginx/sites-enabled && \
+    rm /etc/nginx/sites-enabled/default && \
+    useradd simplepoll
 
 EXPOSE 9001
 
-USER simplepoll
-
+COPY start.sh /home/simplepoll/start.sh
 COPY config.yml /home/simplepoll/config.yml
 COPY SimplePoll.jar /home/simplepoll/SimplePoll.jar
+COPY dist /home/simplepoll/frontend
 
 WORKDIR /home/simplepoll
 
-ENTRYPOINT ["java", "-jar", "SimplePoll.jar", "server", "config.yml"]
+RUN chown -R simplepoll:simplepoll /home/simplepoll
+
+ENTRYPOINT ["/home/simplepoll/start.sh"]

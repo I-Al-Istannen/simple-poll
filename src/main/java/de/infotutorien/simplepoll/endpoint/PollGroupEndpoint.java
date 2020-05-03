@@ -2,6 +2,10 @@ package de.infotutorien.simplepoll.endpoint;
 
 import static de.infotutorien.simplepoll.util.ResponseHelper.notFound;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import de.infotutorien.simplepoll.config.PollUser;
 import de.infotutorien.simplepoll.model.Poll;
 import de.infotutorien.simplepoll.model.PollGroup;
@@ -12,7 +16,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import javax.validation.Valid;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.GET;
 import javax.ws.rs.PATCH;
@@ -24,7 +27,7 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 
 @Produces(MediaType.APPLICATION_JSON)
-@Path("/groups")
+@Path("/group")
 public class PollGroupEndpoint {
 
   private final Polls polls;
@@ -34,7 +37,7 @@ public class PollGroupEndpoint {
   }
 
   @PUT
-  public PollGroup createGroup(@Auth PollUser user, @Valid PollCreationRequest request) {
+  public PollGroup createGroup(@Auth PollUser user, @Valid PollGroupCreationRequest request) {
     PollGroup group = new PollGroup(
         UUID.randomUUID(),
         user.getId(),
@@ -67,6 +70,17 @@ public class PollGroupEndpoint {
   }
 
   @GET
+  public PollGroup getPollGroup(@Auth PollUser user, @NotNull @QueryParam("id") UUID groupId) {
+    Optional<PollGroup> groupOptional = polls.getGroup(groupId);
+
+    if (groupOptional.isEmpty()) {
+      throw new WebApplicationException(notFound());
+    }
+    return groupOptional.get();
+  }
+
+  @Path("/for-user")
+  @GET
   public List<PollGroup> getGroupsForUser(@Auth PollUser user) {
     return polls.getGroupsOfUser(user.getId());
   }
@@ -84,13 +98,13 @@ public class PollGroupEndpoint {
     return groupOptional.get().getAllPolls();
   }
 
-  private static class PollCreationRequest {
+  private static class PollGroupCreationRequest {
 
-    @NotEmpty
     @NotNull
-    String name;
+    private final String name;
 
-    public PollCreationRequest(String name) {
+    @JsonCreator
+    public PollGroupCreationRequest(@JsonProperty("name") String name) {
       this.name = name;
     }
 
@@ -102,9 +116,9 @@ public class PollGroupEndpoint {
   private static class PollAddRequest {
 
     @NotNull
-    UUID groupId;
+    private final UUID groupId;
     @NotNull
-    UUID pollId;
+    private final UUID pollId;
 
     public PollAddRequest(@NotNull UUID groupId, @NotNull UUID pollId) {
       this.groupId = groupId;

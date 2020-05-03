@@ -23,17 +23,16 @@
         <v-row>
           <v-col cols="2" v-for="(entry, index) in pollEntries" :key="index">
             <v-card>
-              <v-card-title class="entry-header">{{ entry.humanName }}</v-card-title>
+              <v-card-title class="entry-header nicer-word-break">
+                <span>{{ entry.humanName }}</span>
+              </v-card-title>
               <v-card-text>
-                <div
-                  v-if="entry.type === 'BOOLEAN'"
-                  class="nicer-word-break text-center headline font-weight-black"
-                >
+                <div v-if="entry.type === 'BOOLEAN'" class="text-center headline font-weight-black">
                   <span>{{ voteCountForEntry(entry.id) }}</span>
                 </div>
                 <div v-if="entry.type === 'TEXT'">
                   <v-list>
-                    <v-subheader class="nicer-word-break">
+                    <v-subheader>
                       <span>{{ voteCountForEntry(entry.id) }} Vote(s)</span>
                     </v-subheader>
                     <v-list-item-group>

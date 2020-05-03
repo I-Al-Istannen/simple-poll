@@ -1,41 +1,39 @@
 package de.infotutorien.simplepoll;
 
-import static spark.Spark.before;
-import static spark.Spark.get;
-import static spark.Spark.internalServerError;
-import static spark.Spark.notFound;
-import static spark.Spark.port;
-import static spark.Spark.post;
-
-import com.google.gson.Gson;
-import de.infotutorien.simplepoll.endpoint.CreatePollEndpoint;
-import de.infotutorien.simplepoll.endpoint.GetPollEndpoint;
-import de.infotutorien.simplepoll.endpoint.RevealPollEndpoint;
-import de.infotutorien.simplepoll.endpoint.VoteOnPollEndpoint;
+import de.infotutorien.simplepoll.config.PollAuthenticator;
+import de.infotutorien.simplepoll.config.PollConfig;
+import de.infotutorien.simplepoll.config.PollUser;
+import de.infotutorien.simplepoll.endpoint.PollFetchEndpoint;
+import de.infotutorien.simplepoll.endpoint.PollCreateModifyEndpoint;
+import de.infotutorien.simplepoll.endpoint.PollVoteEndpoint;
 import de.infotutorien.simplepoll.model.Polls;
-import de.infotutorien.simplepoll.util.AuthorizationHelper;
-import java.util.Map;
+import io.dropwizard.Application;
+import io.dropwizard.auth.AuthDynamicFeature;
+import io.dropwizard.auth.AuthValueFactoryProvider;
+import io.dropwizard.auth.basic.BasicCredentialAuthFilter;
+import io.dropwizard.setup.Environment;
 
-public class Main {
+public class Main extends Application<PollConfig> {
 
-  public static void main(String[] args) {
-    Gson gson = new Gson();
-    Polls polls = new Polls();
-
-    port(8080);
-
-    before((request, response) -> AuthorizationHelper.ensureUserIdPresent(request.session()));
-    before((request, response) -> response.header("Content-Type", "application/json"));
-
-    post("/create", new CreatePollEndpoint(gson, polls));
-    post("/reveal", new RevealPollEndpoint(gson, polls));
-    post("/vote", new VoteOnPollEndpoint(gson, polls));
-    get("/get", new GetPollEndpoint(gson, polls));
-
-    internalServerError(
-        (request, response) -> gson.toJson(Map.of("error", "Internal server error"))
+  @Override
+  public void run(PollConfig pollConfig, Environment environment) {
+    // API authentication
+    environment.jersey().register(
+        new AuthDynamicFeature(
+            new BasicCredentialAuthFilter.Builder<PollUser>()
+                .setAuthenticator(new PollAuthenticator())
+                .buildAuthFilter()
+        )
     );
-    notFound((request, response) -> gson.toJson(Map.of("error", "not found")));
+    environment.jersey().register(new AuthValueFactoryProvider.Binder<>(PollUser.class));
+
+    Polls polls = new Polls();
+    environment.jersey().register(new PollFetchEndpoint(polls));
+    environment.jersey().register(new PollCreateModifyEndpoint(polls));
+    environment.jersey().register(new PollVoteEndpoint(polls));
   }
 
+  public static void main(String[] args) throws Exception {
+    new Main().run(args);
+  }
 }

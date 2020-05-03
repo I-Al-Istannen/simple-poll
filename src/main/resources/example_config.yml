@@ -1,0 +1,8 @@
+# Dropwizard magic so the REST API port can be configured
+server:
+  applicationConnectors:
+    - type: http
+      port: 8080 # REST API port
+  adminConnectors:
+    - type: http
+      port: 8081 # Admin UI port

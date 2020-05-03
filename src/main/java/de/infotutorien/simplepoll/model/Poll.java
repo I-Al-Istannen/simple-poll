@@ -1,8 +1,6 @@
 package de.infotutorien.simplepoll.model;
 
-import de.infotutorien.simplepoll.model.PollEntry.EntryType;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -18,12 +16,12 @@ public class Poll {
 
   private final String humanName;
   private final UUID id;
-  private final String creator;
+  private final UUID creator;
   private final List<PollEntry> entries;
-  private final Set<UserVote> votes;
+  private final Set<UserVote<?>> votes;
   private final AtomicBoolean revealResults;
 
-  public Poll(String humanName, UUID id, String creator, List<PollEntry> entries) {
+  public Poll(String humanName, UUID id, UUID creator, List<PollEntry> entries) {
     this.humanName = humanName;
     this.id = id;
     this.creator = creator;
@@ -40,7 +38,7 @@ public class Poll {
     return id;
   }
 
-  public String getCreator() {
+  public UUID getCreator() {
     return creator;
   }
 
@@ -48,7 +46,7 @@ public class Poll {
     return Collections.unmodifiableList(entries);
   }
 
-  public Collection<UserVote> getVotes() {
+  public Set<UserVote<?>> getVotes() {
     return Collections.unmodifiableSet(votes);
   }
 
@@ -60,20 +58,13 @@ public class Poll {
     return revealResults.get();
   }
 
-  public void addVote(UserVote vote) {
+  public void addVote(UserVote<?> vote) {
     Optional<PollEntry> entry = entries.stream()
         .filter(it -> it.getId().equals(vote.getPollEntry()))
         .findFirst();
 
     if (entry.isEmpty()) {
       throw new IllegalArgumentException("Invalid poll entry id");
-    }
-    PollEntry pollEntry = entry.get();
-
-    if (pollEntry.getType() == EntryType.BOOLEAN) {
-      votes.add(new UserVote(
-          vote.getPollEntry(), vote.getUser(), Boolean.toString("true".equals(vote.getValue()))
-      ));
     }
 
     votes.add(vote);

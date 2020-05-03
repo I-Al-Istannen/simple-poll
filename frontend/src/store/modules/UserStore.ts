@@ -1,5 +1,4 @@
 import { createModule, mutation } from 'vuex-class-component'
-import { mdiLogin } from '@mdi/js'
 import { vxm } from '..'
 
 const VxModule = createModule({

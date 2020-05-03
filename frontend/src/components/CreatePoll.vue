@@ -44,7 +44,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import Component from 'vue-class-component'
-import { PollEntry, EntryType } from '@/store/types'
+import { EntryType } from '@/store/types'
 import { vxm } from '../store'
 
 @Component

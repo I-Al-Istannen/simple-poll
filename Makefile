@@ -1,13 +1,20 @@
 .PHONY: frontend backend clean
 
+all: backend frontend
+
+clean:
+	rm -rf .docker
+	mvn clean
+	make -C frontend clean
+
 .docker:
 	mkdir .docker
 
-backend/target/backend.jar: $(shell find -name '*.java' -o -name '*.sql' -o -name pom.xml)
+target/simple-poll.jar: $(shell find -name '*.java' -o -name '*.sql' -o -name pom.xml)
 	@echo '#######################'
 	@echo '## Building backend  ##'
 	@echo '#######################'
-	JAVA_HOME=/usr/lib/jvm/java-14-adoptopenjdk/ mvn package
+	mvn package
 
 backend: target/simple-poll.jar
 	@echo "Backend done :)"

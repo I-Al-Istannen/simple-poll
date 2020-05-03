@@ -2,7 +2,7 @@
 server:
   applicationConnectors:
     - type: http
-      port: 8080 # REST API port
+      port: 9001 # REST API port
   adminConnectors:
     - type: http
-      port: 8081 # Admin UI port
+      port: 9081 # Admin UI port

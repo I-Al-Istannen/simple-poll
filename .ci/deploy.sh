@@ -23,7 +23,7 @@ DOCKER_SERVER_DIR="/home/simplepoll/.docker"
 executeOnServer "rm -rf $DOCKER_SERVER_DIR"
 executeOnServer "mkdir -p $DOCKER_SERVER_DIR"
 
-copyToServer "target/simple-poll.jar" "$DOCKER_SERVER_DIR"
+copyToServer "target/simple-poll.jar" "$DOCKER_SERVER_DIR/SimplePoll.jar"
 
 copyToServer "src/docker/nginx-site" "$DOCKER_SERVER_DIR"
 copyToServer "src/docker/nginx.conf" "$DOCKER_SERVER_DIR"

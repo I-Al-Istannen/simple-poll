@@ -8,6 +8,12 @@
         </v-toolbar>
       </v-card-title>
       <v-card-text v-if="poll">
+        <v-row justify="end">
+          <v-col cols="auto">
+            <span>Link to this poll:</span>
+            <a class="px-1 subtitle-2" :href="pollVoteLink">{{ pollVoteLink }}</a>
+          </v-col>
+        </v-row>
         <v-row>
           <v-col cols="2" v-for="(entry, index) in pollEntries" :key="index">
             <v-card>
@@ -83,6 +89,10 @@ export default class Results extends Vue {
       return false
     }
     return this.poll.resultsRevealed
+  }
+
+  get pollVoteLink() {
+    return document.location.origin + '/vote/' + this.pollId
   }
 
   voteCountForEntry(id: string): number {

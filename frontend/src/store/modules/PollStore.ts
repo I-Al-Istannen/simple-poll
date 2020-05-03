@@ -15,7 +15,8 @@ function pollFromJson(data: any) {
     data.creator || undefined,
     data.entries.map((it: any) => new PollEntry(it.humanName, it.id, it.type)),
     data.votes.map((it: any) => new UserVote(it.user, it.pollEntry, it.value)),
-    data.revealed
+    data.revealed,
+    data.allowMultiple
   )
 }
 
@@ -25,10 +26,12 @@ export class PollStore extends VxModule {
   @action
   async createPoll(payload: {
     name: string
+    allowMultiple: boolean
     entries: { name: string; type: EntryType }[]
   }): Promise<Poll> {
     const response = await axios.put('poll', {
       name: payload.name,
+      allowMultiple: payload.allowMultiple,
       pollEntries: payload.entries
     })
     return pollFromJson(response.data)

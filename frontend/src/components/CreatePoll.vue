@@ -29,6 +29,15 @@
           <v-checkbox
             v-model="freeformInput"
             label="Allow user to enter arbitrary text and don't constrain them to 'yes' or 'no'"
+            class="pa-0"
+            hide-details
+          ></v-checkbox>
+          <v-checkbox
+            class="mt-1"
+            v-model="allowMultiple"
+            label="Allow multiple answers (freeform input is always multiple)"
+            :disabled="freeformInput"
+            hide-details
           ></v-checkbox>
         </v-form>
       </v-card-text>
@@ -69,6 +78,7 @@ export default class Create extends Vue {
   ]
 
   private formValid = false
+  private allowMultiple = false
 
   private pollName = ''
   private customOptions: string[] = []
@@ -119,7 +129,11 @@ export default class Create extends Vue {
       entries = this.preset.map(it => ({ name: it, type: type }))
     }
 
-    const poll = await vxm.pollModule.createPoll({ name: this.pollName, entries: entries })
+    const poll = await vxm.pollModule.createPoll({
+      name: this.pollName,
+      allowMultiple: this.allowMultiple,
+      entries: entries
+    })
     this.$router.push({ name: 'view-results', params: { pollId: poll.id } })
   }
 }

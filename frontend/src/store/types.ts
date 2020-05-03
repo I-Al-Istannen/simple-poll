@@ -34,6 +34,7 @@ export class Poll {
   entries: PollEntry[]
   votes: Set<UserVote>
   resultsRevealed: boolean
+  allowMultiple: boolean
 
   constructor(
     humanName: string,
@@ -41,7 +42,8 @@ export class Poll {
     creator: string | undefined,
     entries: PollEntry[],
     votes: UserVote[],
-    resultsRevealed: boolean
+    resultsRevealed: boolean,
+    allowMultiple: boolean
   ) {
     this.humanName = humanName
     this.id = id
@@ -49,5 +51,6 @@ export class Poll {
     this.entries = entries.slice()
     this.votes = new Set(votes)
     this.resultsRevealed = resultsRevealed
+    this.allowMultiple = allowMultiple
   }
 }

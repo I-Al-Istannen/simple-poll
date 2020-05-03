@@ -21,7 +21,12 @@ function pollFromJson(data: any) {
 }
 
 function pollGroupFromJson(data: any) {
-  return new PollGroup(data.name, data.id, data.creator, data.polls)
+  return new PollGroup(
+    data.name,
+    data.id,
+    data.creator,
+    data.allPolls.map((it: any) => pollFromJson(it))
+  )
 }
 
 export class PollStore extends VxModule {
@@ -159,6 +164,16 @@ export class PollStore extends VxModule {
   get pollById(): (id: string) => Poll | undefined {
     return id => {
       return this.polls[id]
+    }
+  }
+
+  get allMyPollGroups(): PollGroup[] {
+    return Object.values(this.myPollGroups).filter(it => it.creator !== undefined)
+  }
+
+  get pollGroupById(): (id: string) => PollGroup {
+    return id => {
+      return this.myPollGroups[id]
     }
   }
 }

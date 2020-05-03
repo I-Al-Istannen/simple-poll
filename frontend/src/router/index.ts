@@ -4,6 +4,7 @@ import Home from '../views/Home.vue'
 import Create from '../views/Create.vue'
 import Results from '../views/ViewResult.vue'
 import Vote from '../views/Vote.vue'
+import PollGroups from '../views/PollGroups.vue'
 import NotFound404 from '../views/NotFound404.vue'
 import { mdiHome, mdiPoll, mdiStackOverflow } from '@mdi/js'
 
@@ -55,6 +56,16 @@ const routes = [
     component: Vote,
     meta: {
       label: 'Vote on a poll',
+      navigable: false,
+      icon: mdiStackOverflow
+    }
+  },
+  {
+    path: '/my-poll-groups',
+    name: 'my-poll-groups',
+    component: PollGroups,
+    meta: {
+      label: 'List your poll groups',
       navigable: false,
       icon: mdiStackOverflow
     }

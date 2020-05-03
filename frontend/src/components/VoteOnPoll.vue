@@ -8,7 +8,7 @@
         </v-toolbar>
       </v-card-title>
       <v-card-text class="mx-4">
-        <v-form v-model="formValid" v-if="poll">
+        <v-form v-model="formValid" v-if="poll && canStillVote">
           <v-row>
             <v-col v-for="entry in poll.entries" :key="entry.id">
               <v-text-field
@@ -41,6 +41,12 @@
             </v-col>
           </v-row>
         </v-form>
+        <div v-if="poll && !canStillVote" class="headline text-center">
+          <span>Voting closed, have a look at the</span>
+          <router-link class="pl-1" :to="{ name: 'view-results', params: { pollId: poll.id } }">
+            <span>results!</span>
+          </router-link>
+        </div>
         <div v-if="!poll" class="headline text-center">
           <span>There is no poll with that ID or it hasn't loaded yet.</span>
         </div>
@@ -106,6 +112,13 @@ export default class VoteOnPoll extends Vue {
       return false
     }
     return this.poll.allowMultiple
+  }
+
+  private get canStillVote() {
+    if (!this.poll) {
+      return false
+    }
+    return !this.poll.resultsRevealed
   }
 
   private refresh() {

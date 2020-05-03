@@ -5,6 +5,7 @@ import Create from '../views/Create.vue'
 import Results from '../views/ViewResult.vue'
 import Vote from '../views/Vote.vue'
 import PollGroups from '../views/PollGroups.vue'
+import PollGroup from '../views/PollGroup.vue'
 import NotFound404 from '../views/NotFound404.vue'
 import { mdiHome, mdiPoll, mdiStackOverflow, mdiShape } from '@mdi/js'
 
@@ -68,6 +69,16 @@ const routes = [
       label: 'List your poll groups',
       navigable: true,
       icon: mdiShape
+    }
+  },
+  {
+    path: '/group/:groupId',
+    name: 'view-group',
+    component: PollGroup,
+    meta: {
+      label: 'View a poll group',
+      navigable: false,
+      icon: mdiStackOverflow
     }
   },
   {

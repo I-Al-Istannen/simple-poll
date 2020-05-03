@@ -34,6 +34,15 @@
               <span>Show results for '{{ item.name }}'</span>
             </v-btn>
           </template>
+          <template #append="{ item, leaf }">
+            <router-link
+              v-if="!leaf"
+              class="ml-2"
+              :to="{ name: 'view-group', params: { groupId: item.id } }"
+            >
+              <span>Details</span>
+            </router-link>
+          </template>
         </v-treeview>
       </v-card-text>
       <v-card-actions>

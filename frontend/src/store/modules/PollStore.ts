@@ -25,7 +25,7 @@ function pollGroupFromJson(data: any) {
     data.name,
     data.id,
     data.creator,
-    data.allPolls.map((it: any) => pollFromJson(it))
+    data.polls.map((it: any) => pollFromJson(it))
   )
 }
 

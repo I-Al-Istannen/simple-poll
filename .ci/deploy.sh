@@ -27,7 +27,8 @@ copyToServer "target/simple-poll.jar" "$DOCKER_SERVER_DIR"
 
 copyToServer "src/docker/nginx-site" "$DOCKER_SERVER_DIR"
 copyToServer "src/docker/nginx.conf" "$DOCKER_SERVER_DIR"
-copyToServer "./src/docker/start.sh" "$DOCKER_SERVER_DIR"
+copyToServer "src/docker/start.sh" "$DOCKER_SERVER_DIR"
+copyToServer "src/main/resources/example_config.yml" "$DOCKER_SERVER_DIR/config.yml"
 
 tar -cf dist.tar "frontend/dist"
 copyToServer "dist.tar" "$DOCKER_SERVER_DIR"

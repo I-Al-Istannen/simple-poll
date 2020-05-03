@@ -12,8 +12,20 @@
           <v-col cols="2" v-for="(entry, index) in pollEntries" :key="index">
             <v-card>
               <v-card-title class="entry-header">{{ entry.humanName }}</v-card-title>
-              <v-card-text class="text-center headline font-weight-black">
-                <span>{{ votesForEntry(entry.id) }}</span>
+              <v-card-text>
+                <div v-if="entry.type === 'BOOLEAN'" class="text-center headline font-weight-black">
+                  <span>{{ voteCountForEntry(entry.id) }}</span>
+                </div>
+                <div v-if="entry.type === 'TEXT'">
+                  <v-list>
+                    <v-subheader>{{ voteCountForEntry(entry.id) }} Vote(s)</v-subheader>
+                    <v-list-item-group>
+                      <v-list-item v-for="(vote, index) in votesForEntry(entry.id)" :key="index">
+                        <span>{{ vote.value }}</span>
+                      </v-list-item>
+                    </v-list-item-group>
+                  </v-list>
+                </div>
               </v-card-text>
             </v-card>
           </v-col>
@@ -23,7 +35,9 @@
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn v-if="canReveal && !isRevealed" color="warning" outlined @click="reveal">Reveal</v-btn>
-        <v-btn v-if="isRevealed" outlined color="success" @click="unreveal">Hide results</v-btn>
+        <v-btn v-if="canReveal && isRevealed" outlined color="success" @click="unreveal">
+          <span>Hide results</span>
+        </v-btn>
         <v-btn color="primary" outlined @click="refresh">Refresh</v-btn>
         <v-spacer></v-spacer>
       </v-card-actions>
@@ -36,7 +50,7 @@ import Vue from 'vue'
 import Component from 'vue-class-component'
 import { vxm } from '../store'
 import { Watch } from 'vue-property-decorator'
-import { PollEntry, Poll } from '../store/types'
+import { PollEntry, Poll, UserVote } from '../store/types'
 
 @Component
 export default class Results extends Vue {
@@ -53,7 +67,7 @@ export default class Results extends Vue {
       return []
     }
     const entries = this.poll.entries.slice()
-    entries.sort((a, b) => this.votesForEntry(b.id) - this.votesForEntry(a.id))
+    entries.sort((a, b) => this.voteCountForEntry(b.id) - this.voteCountForEntry(a.id))
     return entries
   }
 
@@ -71,15 +85,15 @@ export default class Results extends Vue {
     return this.poll.resultsRevealed
   }
 
-  votesForEntry(id: string): number {
+  voteCountForEntry(id: string): number {
+    return this.votesForEntry(id).length
+  }
+
+  votesForEntry(id: string): UserVote[] {
     if (!this.poll) {
-      return 0
+      return []
     }
-    let count = 0
-    this.poll.votes.forEach(it => {
-      if (it.pollEntry == id) count++
-    })
-    return count
+    return Array.from(this.poll.votes).filter(it => it.pollEntry === id)
   }
 
   private reveal() {

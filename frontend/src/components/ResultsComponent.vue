@@ -36,7 +36,11 @@
                       <span>{{ voteCountForEntry(entry.id) }} Vote(s)</span>
                     </v-subheader>
                     <v-list-item-group>
-                      <v-list-item v-for="(vote, index) in votesForEntry(entry.id)" :key="index">
+                      <v-list-item
+                        v-for="(vote, index) in votesForEntry(entry.id)"
+                        :key="index"
+                        class="nicer-word-break"
+                      >
                         <span>{{ vote.value }}</span>
                       </v-list-item>
                     </v-list-item-group>

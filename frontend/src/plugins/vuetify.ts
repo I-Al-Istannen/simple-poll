@@ -16,12 +16,7 @@ export default new Vuetify({
         error: '#e53935',
         info: '#3f51b5',
         success: '#1faa00',
-        snackbarSuccess: '#1faa00',
-        warning: '#c51162',
-        graphBackground: 'white',
-        graphFailedOrUnbenchmarked: 'dimgrey',
-        graphReferenceElements: 'grey',
-        rowHighlight: '#d3d3d3'
+        warning: '#c51162'
       }
     }
   },

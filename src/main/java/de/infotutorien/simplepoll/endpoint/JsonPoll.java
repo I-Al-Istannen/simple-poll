@@ -22,9 +22,10 @@ public class JsonPoll {
   private final Set<UserVote<?>> votes;
   private final boolean isRevealed;
   private final boolean isAllowMultiple;
+  private final boolean isPublicResults;
 
   public JsonPoll(String humanName, UUID id, UUID creator, Collection<PollEntry> entries,
-      Set<UserVote<?>> votes, boolean isRevealed, boolean isAllowMultiple) {
+      Set<UserVote<?>> votes, boolean isRevealed, boolean isAllowMultiple, boolean isPublicResults) {
     this.humanName = humanName;
     this.id = id;
     this.creator = creator;
@@ -32,6 +33,7 @@ public class JsonPoll {
     this.votes = votes;
     this.isRevealed = isRevealed;
     this.isAllowMultiple = isAllowMultiple;
+    this.isPublicResults = isPublicResults;
   }
 
   public String getHumanName() {
@@ -62,15 +64,20 @@ public class JsonPoll {
     return isAllowMultiple;
   }
 
+  public boolean isPublicResults() {
+    return isPublicResults;
+  }
+
   public static JsonPoll fromUnprivilegedPoll(Poll poll) {
     return new JsonPoll(
         poll.getHumanName(),
         poll.getId(),
         null,
         poll.getEntries(),
-        poll.isRevealResults() ? poll.getVotes() : Collections.emptySet(),
+        poll.isRevealResults() || poll.isPublicResults() ? poll.getVotes() : Collections.emptySet(),
         poll.isRevealResults(),
-        poll.isAllowMultiple()
+        poll.isAllowMultiple(),
+        poll.isPublicResults()
     );
   }
 
@@ -82,7 +89,8 @@ public class JsonPoll {
         poll.getEntries(),
         poll.getVotes(),
         poll.isRevealResults(),
-        poll.isAllowMultiple()
+        poll.isAllowMultiple(),
+        poll.isPublicResults()
     );
   }
 }

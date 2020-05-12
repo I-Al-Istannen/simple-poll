@@ -26,14 +26,16 @@ public class Poll {
   private final Set<UserVote<?>> votes;
   private final AtomicBoolean revealResults;
   private final boolean allowMultiple;
+  private final boolean publicResults;
 
   public Poll(String humanName, UUID id, UUID creator, List<PollEntry> entries,
-      boolean allowMultiple) {
+      boolean allowMultiple, boolean publicResults) {
     this.humanName = humanName;
     this.id = id;
     this.creator = creator;
     this.entries = entries.stream().collect(toMap(PollEntry::getId, identity()));
     this.allowMultiple = allowMultiple;
+    this.publicResults = publicResults;
     this.votes = Collections.newSetFromMap(new ConcurrentHashMap<>());
     this.revealResults = new AtomicBoolean();
   }
@@ -68,6 +70,10 @@ public class Poll {
 
   public boolean isAllowMultiple() {
     return allowMultiple;
+  }
+
+  public boolean isPublicResults() {
+    return publicResults;
   }
 
   public void addVote(UserVote<?> vote) {

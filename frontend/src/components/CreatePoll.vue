@@ -39,6 +39,13 @@
             :disabled="freeformInput"
             hide-details
           ></v-checkbox>
+          <v-checkbox
+            class="mt-1"
+            v-model="publicResults"
+            label="Allow users to view results before the poll ended"
+            :disabled="freeformInput"
+            hide-details
+          ></v-checkbox>
           <v-row>
             <v-col cols="3">
               <v-select
@@ -98,6 +105,7 @@ export default class Create extends Vue {
 
   private formValid = false
   private allowMultiple = false
+  private publicResults = false
 
   private pollName = ''
   private customOptions: string[] = []
@@ -155,6 +163,7 @@ export default class Create extends Vue {
     const poll = await vxm.pollModule.createPoll({
       name: this.pollName,
       allowMultiple: this.allowMultiple,
+      publicResults: this.publicResults,
       entries: entries
     })
 

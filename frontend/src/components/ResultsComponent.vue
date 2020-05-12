@@ -50,9 +50,13 @@
       <v-card-text v-else>Poll not (yet) known</v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn v-if="canReveal && !isRevealed" color="warning" outlined @click="reveal">Reveal</v-btn>
+        <v-btn v-if="canReveal && !isRevealed" color="warning" outlined @click="reveal">
+          <span v-if="!poll.publicResults">Close poll and reveal results</span>
+          <span v-if="poll.publicResults">Close poll</span>
+        </v-btn>
         <v-btn v-if="canReveal && isRevealed" outlined color="success" @click="unreveal">
-          <span>Hide results</span>
+          <span v-if="!poll.publicResults">Reopen poll and hide results</span>
+          <span v-if="poll.publicResults">Reopen poll</span>
         </v-btn>
         <v-btn color="primary" outlined @click="refresh">Refresh</v-btn>
         <v-spacer></v-spacer>

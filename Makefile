@@ -30,4 +30,4 @@ docker: .docker frontend backend
 	cp src/main/resources/example_config.yml .docker/config.yml
 	cp src/docker/* .docker
 	cp -r frontend/dist .docker
-	(cd .docker && sudo docker build -t simplepoll .)
+	(cd .docker && sudo docker build -t registry.ialistannen.de/uni/simplepoll .)
